@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div class="title">👁️ DR Detection System</div>
+
+    <div class="card">
+        <h2>Prediction Result</h2>
+
+        <p style="font-size: 1.2rem;">Severity: <b>{{ prediction }}</b></p>
+        <p>Confidence: <b>{{ confidence }}%</b></p>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+            <div>
+                <h4>Uploaded Image</h4>
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="180" style="border-radius: 8px; border: 1px solid #ddd;">
+            </div>
+            <div>
+                <h4>Grad-CAM</h4>
+                <img src="{{ url_for('static', filename=gradcam_file) }}" width="180" style="border-radius: 8px; border: 1px solid #ddd;">
+            </div>
+        </div>
+
+        <br><br>
+        <a href="{{ url_for('download', filename=report_path) }}" class="button" style="text-decoration: none; background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px;">⬇ Download PDF Report</a>
+        
+        <br><br>
+        <hr>
+        <a href="/">Upload Another</a> | <a href="/history">View History</a>
+    </div>
+</div>
+
+</body>
+</html>
