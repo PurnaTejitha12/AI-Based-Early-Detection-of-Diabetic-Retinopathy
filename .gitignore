@@ -1,0 +1,57 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Dataset files - avoid uploading large or sensitive data
+dataset/
+data/
+
+# Model checkpoints and large trained models
+models/*.keras
+models/*.h5
+models/*.hdf5
+models/*.pt
+models/*.pth
+models/*.onnx
+checkpoints/
+
+# Training outputs
+runs/
+outputs/
+logs/
+
+# Local configuration
+.streamlit/secrets.toml
