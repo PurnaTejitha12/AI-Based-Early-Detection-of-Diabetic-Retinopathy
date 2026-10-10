@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction History | RetinaAI</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #172033;
+            --muted: #718096;
+            --border: #e3eaf2;
+            --bg: #f4f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 22px;
+        }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .heading h1 {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        .heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 16px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .stat-card p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stat-card h2 {
+            margin-top: 8px;
+            font-size: 28px;
+        }
+
+        .table-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-header h2 {
+            font-size: 18px;
+        }
+
+        .table-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 18px 22px;
+        }
+
+        .toolbar input,
+        .toolbar select {
+            padding: 11px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: white;
+            color: var(--dark);
+        }
+
+        .toolbar input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 15px 18px;
+            text-align: left;
+            border-bottom: 1px solid #edf1f6;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 6px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: normal;
+            max-width: 220px;
+        }
+
+        .confidence {
+            font-weight: 700;
+        }
+
+        .report-link {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .report-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 55px 20px;
+            color: var(--muted);
+        }
+
+        .empty h3 {
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .empty a {
+            margin-top: 18px;
+        }
+
+        .table-footer {
+            padding: 16px 22px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .disclaimer {
+            margin-top: 22px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #fffbeb;
+            border: 1px solid #f5d99a;
+            color: #805a12;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 28px 15px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 16px 20px;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            nav {
+                gap: 12px;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 12px;
+            }
+
+            .heading h1 {
+                font-size: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="brand">RetinaAI</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="heading">
+        <div>
+            <h1>Prediction History</h1>
+            <p>Review previous retinal image analyses and generated reports.</p>
+        </div>
+
+        <a href="/" class="btn">+ New Analysis</a>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <p>Total recorded analyses</p>
+            <h2 id="totalCount">{{ data | length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Records matching your search</p>
+            <h2 id="visibleCount">{{ data | length }}</h2>
+        </div>
+    </section>
+
+    <section class="table-card">
+        <div class="table-header">
+            <h2>Analysis Records</h2>
+            <p>Records are displayed with the latest analyses first.</p>
+        </div>
+
+        <div class="toolbar">
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search filename or prediction..."
+                aria-label="Search prediction history"
+            >
+
+            <select id="predictionFilter" aria-label="Filter by prediction">
+                <option value="">All predictions</option>
+                {% for row in data %}
+                    <option value="{{ row[2] | e }}">{{ row[2] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if data %}
+        <div class="table-wrap">
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image Filename</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Date &amp; Time</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+
+                        <td>{{ row[1] }}</td>
+
+                        <td>
+                            <span class="badge">{{ row[2] }}</span>
+                        </td>
+
+                        <td class="confidence"
+                            data-confidence="{{ row[3] }}">
+                            {{ "%.2f"|format(row[3]|float) }}%
+                        </td>
+
+                        <td>{{ row[4] }}</td>
+
+                        <td>
+                            {% if row[5] %}
+                                <a class="report-link"
+                                   href="{{ url_for('download', filename=row[5]) }}">
+                                    Download PDF
+                                </a>
+                            {% else %}
+                                <span>Not available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="noMatches" class="empty" hidden>
+            <h3>No matching records</h3>
+            <p>Try another search term or prediction category.</p>
+        </div>
+
+        <div class="table-footer">
+            Showing <strong id="footerCount">{{ data | length }}</strong>
+            matching records.
+        </div>
+
+        {% else %}
+        <div class="empty">
+            <h3>No prediction history yet</h3>
+            <p>Upload a retinal image to create your first analysis record.</p>
+            <a href="/" class="btn">Start an Analysis</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <div class="disclaimer">
+        <strong>Medical disclaimer:</strong>
+        Stored predictions are AI-generated screening outputs, not confirmed
+        diagnoses. A qualified ophthalmologist should interpret results.
+    </div>
+
+</main>
+
+<footer>
+    RetinaAI · AI-Based Early Detection of Diabetic Retinopathy
+</footer>
+
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const predictionFilter = document.getElementById("predictionFilter");
+    const table = document.getElementById("historyTable");
+    const visibleCount = document.getElementById("visibleCount");
+    const footerCount = document.getElementById("footerCount");
+    const noMatches = document.getElementById("noMatches");
+
+    // Remove duplicate prediction choices.
+    const options = Array.from(predictionFilter.options);
+    const seen = new Set();
+
+    options.forEach((option, index) => {
+        if (index === 0) return;
+
+        const value = option.value.trim().toLowerCase();
+
+        if (seen.has(value)) {
+            option.remove();
+        } else {
+            seen.add(value);
+        }
+    });
+
+    function filterHistory() {
+        if (!table) return;
+
+        const query = searchInput.value.trim().toLowerCase();
+        const selectedPrediction = predictionFilter.value.toLowerCase();
+        const rows = Array.from(table.querySelectorAll("tbody tr"));
+
+        let count = 0;
+
+        rows.forEach(row => {
+            const filename = row.cells[1].textContent.toLowerCase();
+            const prediction = row.cells[2].textContent.trim().toLowerCase();
+
+            const matchesSearch =
+                filename.includes(query) || prediction.includes(query);
+
+            const matchesPrediction =
+                !selectedPrediction || prediction === selectedPrediction;
+
+            const visible = matchesSearch && matchesPrediction;
+
+            row.hidden = !visible;
+
+            if (visible) count++;
+        });
+
+        visibleCount.textContent = count;
+        footerCount.textContent = count;
+        noMatches.hidden = count !== 0;
+    }
+
+    searchInput.addEventListener("input", filterHistory);
+    predictionFilter.addEventListener("change", filterHistory);
+</script>
+
+</body>
+</html>

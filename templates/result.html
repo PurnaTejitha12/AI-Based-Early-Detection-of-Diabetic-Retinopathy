@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Results | RetinaAI</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #172033;
+            --muted: #718096;
+            --border: #e3eaf2;
+            --bg: #f4f7fb;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--white);
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .heading {
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .heading p {
+            color: var(--muted);
+        }
+
+        .demo-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .demo-alert .alert-icon {
+            font-size: 23px;
+            line-height: 1.3;
+        }
+
+        .demo-alert h2 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .demo-alert p {
+            font-size: 13px;
+        }
+
+        .result-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .result-card > h2 {
+            font-size: 19px;
+            margin-bottom: 20px;
+        }
+
+        .prediction {
+            padding: 23px;
+            border-radius: 12px;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .prediction h3 {
+            color: var(--primary);
+            font-size: 27px;
+            margin: 7px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .confidence {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .progress {
+            background: #dbeafe;
+            height: 9px;
+            border-radius: 10px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary);
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .demo-note {
+            margin-top: 14px;
+            color: #92400e;
+            font-size: 12px;
+        }
+
+        .images {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .image-box {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .image-box h3 {
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+
+        .image-box img {
+            display: block;
+            width: 100%;
+            height: 270px;
+            object-fit: contain;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .image-name {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .preview-label {
+            display: inline-block;
+            background: #fff7ed;
+            color: #9a3412;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .primary {
+            color: white;
+            background: var(--primary);
+        }
+
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            color: #334155;
+            background: #edf2f7;
+        }
+
+        .secondary:hover {
+            background: #dbe3ee;
+        }
+
+        .disclaimer {
+            margin-top: 22px;
+            padding: 16px;
+            border: 1px solid #f5d99a;
+            border-radius: 10px;
+            background: #fffbeb;
+            color: #805a12;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                padding: 16px 20px;
+                gap: 12px;
+            }
+
+            .brand {
+                font-size: 20px;
+            }
+
+            nav {
+                gap: 12px;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 15px;
+            }
+
+            .heading h1 {
+                font-size: 25px;
+            }
+
+            .images {
+                grid-template-columns: 1fr;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+
+            .prediction h3 {
+                font-size: 23px;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">RetinaAI</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="heading">
+        <h1>Prediction Results</h1>
+        <p>Review your uploaded image and the generated demonstration output.</p>
+    </section>
+
+    <!-- Demo warning -->
+    {% if demo_mode %}
+    <section class="demo-alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+
+        <div>
+            <h2>Demonstration Mode — Not a Medical Prediction</h2>
+            <p>
+                This result is randomly generated for testing the website.
+                The uploaded image has not been analyzed for diabetic
+                retinopathy. The displayed category and confidence are
+                not based on the image and must not be used for diagnosis
+                or treatment decisions.
+            </p>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Prediction summary -->
+    <section class="result-card">
+        <h2>Analysis Summary</h2>
+
+        <div class="prediction">
+            <p class="label">Demonstration category</p>
+
+            <h3 id="predictionText">{{ prediction }}</h3>
+
+            <p class="confidence">
+                <strong>Sample confidence:</strong>
+                <span id="confidenceText">--</span>
+            </p>
+
+            <div
+                class="progress"
+                role="progressbar"
+                aria-label="Sample confidence"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="{{ confidence }}"
+                id="confidenceProgress"
+            >
+                <div class="progress-bar" id="confidenceBar"></div>
+            </div>
+
+            <p class="demo-note">
+                The sample confidence is illustrative only. It is not a
+                measurement of the uploaded image or a probability of disease.
+            </p>
+        </div>
+
+        <div class="actions">
+            <a href="/" class="btn primary">
+                Analyze Another Image
+            </a>
+
+            <a href="/history" class="btn secondary">
+                View History
+            </a>
+
+            {% if report_path %}
+            <a
+                href="{{ url_for('download', filename=report_path) }}"
+                class="btn secondary"
+            >
+                Download PDF Report
+            </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Image preview -->
+    <section class="result-card">
+        <h2>Uploaded Image</h2>
+
+        <div class="images">
+
+            <div class="image-box">
+                <h3>Original Retinal Image</h3>
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' + filename) }}"
+                    alt="Uploaded retinal image"
+                >
+
+                <p class="image-name">
+                    Filename: {{ filename }}
+                </p>
+            </div>
+
+            <div class="image-box">
+                <h3>Image Preview</h3>
+
+                {% if gradcam_file %}
+                <img
+                    src="{{ url_for('static', filename=gradcam_file) }}"
+                    alt="Preview copy of the uploaded retinal image"
+                >
+
+                <span class="preview-label">
+                    Preview only — not a Grad-CAM heatmap
+                </span>
+                {% else %}
+                <p>
+                    No image preview is available.
+                </p>
+                {% endif %}
+
+                <p class="image-name">
+                    This preview is a copy of the uploaded image.
+                    No AI attention map has been generated.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="disclaimer">
+            <strong>Medical disclaimer:</strong>
+            RetinaAI is currently running in demonstration mode.
+            It does not detect diabetic retinopathy. Please consult a
+            qualified ophthalmologist for actual retinal screening,
+            diagnosis, and treatment recommendations.
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    RetinaAI · AI-Based Early Detection of Diabetic Retinopathy
+</footer>
+
+<script>
+    // Display the sample confidence supplied by Flask.
+    // This value is illustrative and is not a real prediction.
+    const rawConfidence = Number({{ confidence | tojson }});
+
+    const confidence = Number.isFinite(rawConfidence)
+        ? Math.max(0, Math.min(100, rawConfidence))
+        : 0;
+
+    document.getElementById("confidenceText").textContent =
+        confidence.toFixed(2) + "%";
+
+    document.getElementById("confidenceBar").style.width =
+        confidence + "%";
+
+    document.getElementById("confidenceProgress").setAttribute(
+        "aria-valuenow",
+        confidence
+    );
+</script>
+
+</body>
+</html>
