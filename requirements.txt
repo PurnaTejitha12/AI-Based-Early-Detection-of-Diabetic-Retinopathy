@@ -1,6 +1,9 @@
 Flask
 gunicorn
+reportlab
 tensorflow
 numpy
+pandas
 Pillow
 opencv-python-headless
+scikit-learn
